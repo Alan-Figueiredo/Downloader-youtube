@@ -26,47 +26,53 @@ while True:
 
     # Funcão para baixar mp3
     def mp3(progresso_mp3):
-
         
-        progresso_mp3 = YouTube(yt,on_progress_callback=on_progress) # Mostrar barra de progresso
-        progresso_mp3.streams.filter(only_audio = True) # Somente audio
-        
-        print(f'Titulo do video: {progresso_mp3.title}') # Mostrar titulo do video
-        print('Baixando...')
+        try:
+            progresso_mp3 = YouTube(yt,on_progress_callback=on_progress) # Mostrar barra de progresso
+            progresso_mp3.streams.filter(only_audio = True) # Somente audio
+            
+            print(f'Titulo do video: {progresso_mp3.title}') # Mostrar titulo do video
+            print('Baixando...')
 
-        stream = progresso_mp3.streams.get_by_itag(140)
-        stream.download(diretorio) # Baixar o arquivo "escravo"
+            stream = progresso_mp3.streams.get_by_itag(140)
+            stream.download(diretorio) # Baixar o arquivo "escravo"
 
-        print()
-        print('Convertendo...')
+            print()
+            print('Convertendo...')
 
-        path = Path(diretorio)       
-        lista = [filename1 for filename1 in list(path.glob('*')) if filename1.suffix =='.mp4' ] # Logica para procurar pela extensão.
+            path = Path(diretorio)       
+            lista = [filename1 for filename1 in list(path.glob('*')) if filename1.suffix =='.mp4' ] # Logica para procurar pela extensão.
 
-        nome1 = str(lista[0])
-        novo_nome = nome1[:-4]
+            nome1 = str(lista[0])
+            novo_nome = nome1[:-4]
 
-        AudioSegment.from_file(nome1).export(novo_nome + '.mp3',format='mp3',bitrate='320k') # Converter em MP3
-        
-        os.remove(nome1)
-        print('Conversão realizada com sucesso! ')
+            AudioSegment.from_file(nome1).export(novo_nome + '.mp3',format='mp3',bitrate='320k') # Converter em MP3
+            
+            os.remove(nome1)
+            print('Conversão realizada com sucesso! ')
+        except:
+                    print(f'{stream.title}{ erro.capitalize()}')
 
     # Funcão para baixar mp4   
+
     def mp4(progresso_mp4):
+        try:
+            progresso_mp4 = YouTube(yt,on_progress_callback=on_progress) # Mostrar barra de progresso
 
-        progresso_mp4 = YouTube(yt,on_progress_callback=on_progress) # Mostrar barra de progresso
+            print(f'Titulo do video: {progresso_mp4.title}') # Mostrar titulo do video
+            print('Baixando...')
 
-        print(f'Titulo do video: {progresso_mp4.title}') # Mostrar titulo do video
-        print('Baixando...')
+            progresso_mp4.streams.filter(adaptive=True) # Qualidade 
 
-        progresso_mp4.streams.filter(adaptive=True) # Qualidade 
+            #stream = progresso.streams.get_by_itag(22) # Download por "ITAG"
+            stream = progresso_mp4.streams.get_highest_resolution()
+            stream.download(diretorio)
 
-        #stream = progresso.streams.get_by_itag(22) # Download por "ITAG"
-        stream = progresso_mp4.streams.get_highest_resolution()
-        stream.download(diretorio)
-
-        print()
-        print('Download realizado com sucesso! ')
+            print()
+            print('Download realizado com sucesso! ')
+            
+        except:
+                    print(f'{stream.title}{ erro.capitalize()}')
 
     # Função para baixar playlists 
     def playlist(progresso_playlist_mp3,progresso_playlist_mp4):
@@ -97,56 +103,56 @@ while True:
                     print('Conversão realizada com sucesso! ')
 
                 except:
-                    print(f'{stream.title}{erro.capitalize()}')
+                    print(f'{stream.title}{ erro.capitalize()}')
 
         elif escolha == '2':
-
+           
             for links in progresso_playlist_mp4.video_urls:
+                try:
+                    stream = YouTube(links,on_progress_callback=on_progress)
 
-                stream = YouTube(links,on_progress_callback=on_progress)
+                    print(f'Titulo do video: {stream.title} ')
+                    print('Baixando...')
+                    stream.streams.filter(adaptive=True)
 
-                print(f'Titulo do video: {stream.title} ')
-                print('Baixando...')
-                stream.streams.filter(adaptive=True)
+                    stream_download = stream.streams.get_highest_resolution()
+                    stream_download.download(diretorio)
 
-                stream_download = stream.streams.get_highest_resolution()
-                stream_download.download(diretorio)
+                    print()
+                    print('Download realizado com sucesso! ')
+                except:
+                    print(f'{stream.title}{ erro.capitalize()}')
+                    
 
-                print()
-                print('Download realizado com sucesso! ')
-                
 
-    try:
 
-        print('Escolha o método de download. ')   
-        escolha = input('[1] Musica [2] Video: ')
-        escolha2 = input('[1] Playlist [2] Link unico: ')
+    print('Escolha o método de download. ')   
+    escolha = input('[1] Musica [2] Video: ')
+    escolha2 = input('[1] Playlist [2] Link unico: ')
 
-        if escolha2 == '2':
-            yt = input('Coloque o link aqui: ')  
-        else:
-            playlist1 = Playlist(input('Coloque o link aqui: '))
+    if escolha2 == '2':
+        yt = input('Coloque o link aqui: ')  
+    else:
+        playlist1 = Playlist(input('Coloque o link aqui: '))
 
-        if escolha == '1':
-            if escolha2 == '1':
-                playlist(playlist1,playlist1)
+    if escolha == '1':
+        if escolha2 == '1':
+            playlist(playlist1,playlist1)
 
-            elif escolha2 == '2':
-                mp3(yt)
-                
-        elif escolha == '2':
-            if escolha2 == '1':
-                playlist(playlist1,playlist1)
+        elif escolha2 == '2':
+            mp3(yt)
+            
+    elif escolha == '2':
+        if escolha2 == '1':
+            playlist(playlist1,playlist1)
 
-            elif escolha2 == '2':
-                mp4(yt)
-        
-        print()
-        escolha1 = input('Deseja continuar?[s][n]')
+        elif escolha2 == '2':
+            mp4(yt)
+    
+    print()
+    escolha1 = input('Deseja continuar?[s][n]')
 
-        if escolha1 == 's':
-            continue
-        else:
-            break
-    except:
-        print('Digite uma opção valida.')
+    if escolha1 == 's':
+        continue
+    else:
+        break
