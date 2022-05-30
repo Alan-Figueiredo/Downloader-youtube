@@ -51,7 +51,7 @@ while True:
             os.remove(nome1)
             print('Conversão realizada com sucesso! ')
         except:
-                    print(f'{stream.title}{ erro.capitalize()}')
+            print(f'{stream.title}{ erro.capitalize()}')
 
     # Funcão para baixar mp4   
 
@@ -72,7 +72,7 @@ while True:
             print('Download realizado com sucesso! ')
             
         except:
-                    print(f'{stream.title}{ erro.capitalize()}')
+            print(f'{stream.title}{ erro.capitalize()}')
 
     # Função para baixar playlists 
     def playlist(progresso_playlist_mp3,progresso_playlist_mp4):
